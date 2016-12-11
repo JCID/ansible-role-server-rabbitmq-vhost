@@ -1,0 +1,23 @@
+---
+ - name:            Aanmaken RabbitMQ vhost
+   rabbitmq_vhost:  name={{ rabbitmq_vhost }}
+                    state=present
+
+ - name:            Admin rechten geven op nieuwe host
+   rabbitmq_user:   user=jcid_admin
+                    password="{{ lookup('password', '~/jcid/repositories/webserver/ansible/files/credentials/' + inventory_hostname + '/rabbitmq/jcid_admin length=30 chars=ascii_letters') }}"
+                    configure_priv=.*
+                    read_priv=.*
+                    write_priv=.*
+                    tags=administrator
+                    vhost={{ rabbitmq_vhost }}
+                    state=present
+
+ - name:            Aanmaken RabbitMQ admin user
+   rabbitmq_user:   user={{ rabbitmq_user }}
+                    password="{{ lookup('password', '~/jcid/repositories/webserver/ansible/files/credentials/' + inventory_hostname + '/rabbitmq/' + rabbitmq_user + ' length=30 chars=ascii_letters') }}"
+                    configure_priv=.*
+                    read_priv=.*
+                    write_priv=.*
+                    vhost={{ rabbitmq_vhost }}
+                    state=present
